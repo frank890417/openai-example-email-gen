@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>專業電子郵件生成器</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEAg3QhqLMpG8r+Knujsl7/1f.dataTables.bootstrap5.min.css" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha384-KyZXEAg3QhqLMpG8r+Knujsl7/1f.dataTables.bootstrap5.min.css" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">專業電子郵件生成器</h1>
+        <form id="email-form" class="mb-3">
+            <div class="mb-3">
+                <label for="sender" class="form-label">寄件人</label>
+                <input type="text" class="form-control" id="sender" placeholder="範例：張三" required>
+            </div>
+            <div class="mb-3">
+                <label for="receiver" class="form-label">收件人</label>
+                <input type="text" class="form-control" id="receiver" placeholder="範例：李四" required>
+            </div>
+            <div class="mb-3">
+                <label for="theme" class="form-label">主題</label>
+                <textarea class="form-control" id="theme" rows="5" placeholder="範例：會議通知" required></textarea>
+            </div>
+            <div class="mb-3">
+                <label for="language" class="form-label">語言</label>
+                <select class="form-select" id="language">
+                    <option value="繁體中文" selected>繁體中文</option>
+                    <option value="English">English</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">產生電子郵件</button>
+        </form>
+        
+        <div class="card">
+            <div class="card-header">
+                Generated Email
+            </div>
+            <div class="card-body">
+                <pre id="generated-email" class="card-text"></pre>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz4fnFO9gybBud7M4JtF8z7xcbii2eveLyrGz7bDp5eVTt5hjjDkXbMmU6" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js" integrity="sha384-KyZXEAg3QhqLMpG8r+Knujsl7/1f.dataTables.bootstrap5.min.css" crossorigin="anonymous"></script>
+    <script>
+        document.getElementById("email-form").addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+                    
+            const sender = document.getElementById("sender").value;
+            const receiver = document.getElementById("receiver").value;
+            const theme = document.getElementById("theme").value;
+            const language = document.getElementById("language").value;
+
+            const response = await fetch("/generate-email", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ sender, receiver, theme, language }),
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                document.getElementById("generated-email").textContent = data.email;
+            } else {
+                document.getElementById("generated-email").textContent = "Failed to generate email";
+            }
+        });
+    </script>
+</body>
+</html>
